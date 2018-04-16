@@ -4,9 +4,16 @@
  * and open the template in the editor.
  */
 package chat_client;
+import  java.sql.*;
+import javax.swing.*;
 
 public class LoginFrom extends javax.swing.JFrame {
 
+    Connection conn= null;
+    PreparedStatement pst=null;
+    ResultSet rs=null;
+    
+    
     public LoginFrom() {
         initComponents();
     }
@@ -32,8 +39,8 @@ public class LoginFrom extends javax.swing.JFrame {
         jSeparator4 = new javax.swing.JSeparator();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
         passwordbox = new javax.swing.JPasswordField();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -72,10 +79,16 @@ public class LoginFrom extends javax.swing.JFrame {
         });
         jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 370, 180, 40));
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 204, 102));
-        jLabel2.setText("Password");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 260, -1, -1));
+        jLabel2.setFont(new java.awt.Font("Tahoma", 2, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(204, 51, 255));
+        jLabel2.setText("           Sign Up");
+        jLabel2.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(51, 255, 204)));
+        jLabel2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel2MouseClicked(evt);
+            }
+        });
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 450, 230, 30));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 204, 102));
@@ -93,12 +106,9 @@ public class LoginFrom extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(51, 0, 204));
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/chat_client/bird-animated-gif-11.gif"))); // NOI18N
-        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 0, 370, 490));
+        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 370, 470));
 
-        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 410, 520));
-
-        jButton2.setText("Sign Up");
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 470, 330, -1));
+        jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 400, 520));
 
         passwordbox.setBackground(new java.awt.Color(32, 33, 35));
         passwordbox.setForeground(new java.awt.Color(153, 153, 153));
@@ -111,16 +121,21 @@ public class LoginFrom extends javax.swing.JFrame {
         });
         jPanel1.add(passwordbox, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 290, 250, 30));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 870, 510));
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(0, 204, 102));
+        jLabel5.setText("Password");
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 260, -1, -1));
+
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 870, 510));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void userTextMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_userTextMouseClicked
         // TODO add your handling code here:
-        
+       
            userText.setText("");
-         
+        
        
     }//GEN-LAST:event_userTextMouseClicked
 
@@ -134,8 +149,51 @@ public class LoginFrom extends javax.swing.JFrame {
     }//GEN-LAST:event_passwordboxMouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        try {
+             conn =MySqlConnector.ConnectDB();
+        
+        String query="Select * from loginform where name=? and pass=?";
+        
+        pst = conn.prepareStatement(query);
+        pst.setString(1, userText.getText());
+        pst.setString(2, passwordbox.getText());
+        
+        rs = pst.executeQuery();
+        int count=0;
+        while(rs.next())
+        {
+            count++;
+        } 
+        if(count==1)
+        {
+            JOptionPane.showMessageDialog(null, "Password Is Corrent");
+            client_frame s = new client_frame();
+            s.setVisible(true);
+            this.hide();
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(null,"Password Is Wrong");
+        }
+        
+        
+            }
+        
+        
+        catch (Exception e) {
+        JOptionPane.showMessageDialog(null, e);
+        
+        }
+ // TODO add your handling code here:
+       
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
+        // TODO add your handling code here:
+        SignUp s = new SignUp();
+        s.setVisible(true);
+        this.hide();
+    }//GEN-LAST:event_jLabel2MouseClicked
 
     /**
      * @param args the command line arguments
@@ -174,11 +232,11 @@ public class LoginFrom extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator1;

@@ -16,7 +16,18 @@ public class MySqlConnector {
     
     public static Connection ConnectDB()
     {
-        
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost/payra","root","");
+            
+          
+            return conn;
+          
+        } catch (Exception e) {
+                JOptionPane.showMessageDialog(null,e);
+        }
+      return  ConnectDB();
     }
     
 }
